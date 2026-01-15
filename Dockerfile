@@ -67,9 +67,11 @@ ENV DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY \
     WAPOR_API_KEY=$WAPOR_API_KEY \
     JITSI_DOMAIN=$JITSI_DOMAIN
 
-# 3. تثبيت مكتبات التشغيل الجغرافية
+# 3. تثبيت مكتبات التشغيل الجغرافية (مع إضافة الروابط الرمزية)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgdal32 libgeos-c1v5 libproj25 libpq5 postgresql-client \
+    && ln -s /usr/lib/x86_64-linux-gnu/libgdal.so.32 /usr/lib/libgdal.so \
+    && ln -s /usr/lib/x86_64-linux-gnu/libgeos_c.so.1 /usr/lib/libgeos_c.so \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # 4. نسخ الملفات والمكتبات
@@ -77,8 +79,7 @@ COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/pytho
 COPY --from=builder /usr/local/bin /usr/local/bin
 COPY . .
 
-# 5. ضبط المسارات الجغرافية لنظام Debian/Ubuntu
+# 5. ضبط المسارات الجغرافية (المسار الصحيح الذي يبحث عنه Django)
 ENV GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
 ENV GEOS_LIBRARY_PATH=/usr/lib/libgeos_c.so
-
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

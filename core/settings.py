@@ -38,14 +38,28 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'core.urls'
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# --- 3. قاعدة البيانات الجغرافية (السيادة على البيانات) ---
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        engine='django.contrib.gis.db.backends.postgis'
-    )
-}
+# --- 3. قاعدة البيانات الجغرافية (تعديل صارم) ---
+DATABASE_URL = os.getenv('DATABASE_URL')
 
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            engine='django.contrib.gis.db.backends.postgis',
+            conn_max_age=600,
+        )
+    }
+    # إضافة خيار SSL الضروري لـ Aiven
+    DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
+else:
+    # هذا السطر سيمنع الحاوية من الانهيار بـ "Dummy" ويخبرك بالخطأ الحقيقي
+    raise ValueError("DATABASE_URL is missing! Please check GitHub Secrets and Devcontainer Bridge.")
+
+# تأمين الاتصال بـ Aiven (اختياري حسب إعدادات Aiven لديك)
+if DATABASE_URL and 'aivencloud.com' in DATABASE_URL:
+    DATABASES['default']['OPTIONS'] = {
+        'sslmode': 'require',
+    }
 # --- 4. محركات الأقمار الصناعية (Sentinel & FAO) ---
 SH_CLIENT_ID = os.getenv('SH_CLIENT_ID')
 SH_CLIENT_SECRET = os.getenv('SH_CLIENT_SECRET')
@@ -69,8 +83,9 @@ REDIS_URL = os.getenv('REDIS_URL')
 REDIS_TOKEN = os.getenv('REDIS_TOKEN')
 
 # --- 7. مسارات المكتبات الجغرافية (مهم جداً للـ Docker) ---
-GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH', '/usr/lib/libgdal.so')
-GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH', '/usr/lib/libgeos_c.so')
+# إصلاح مسارات مكتبات الجغرافيا لنظام Debian 12
+GDAL_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/libgdal.so.32'
+GEOS_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/libgeos_c.so.1'
 
 # --- 8. التدويل (اللغة والوقت - ورقلة، الجزائر) ---
 LANGUAGE_CODE = 'ar-dz'
