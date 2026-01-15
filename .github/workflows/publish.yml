@@ -3,33 +3,35 @@ name: 🚀 AGRO_TECH Smart Publish
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-# 🔑 هذا هو الجزء المفقود الذي سيحول الـ X إلى ✅
 permissions:
   contents: read
-  packages: write
+  packages: write  # هذا السطر يحل مشكلة write_package
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    environment: production 
     
     steps:
-      - name: 📥 سحب الكود المصدري (Checkout)
+      - name: ⬇️ Checkout code
         uses: actions/checkout@v4
 
-      - name: 🔑 تسجيل الدخول إلى GitHub Packages (GHCR)
+      - name: 🔑 Log in to GitHub Packages
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🏗️ بناء ورفع صورة Docker (حقن القاعدة الكاملة)
+      - name: 🏗️ Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
+          tags: ghcr.io/${{ github.repository_owner }}/agro_web_app:latest
+          # حقن كافة المتغيرات الـ 24 الموحدة بدون أي تكرار
           build-args: |
             DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
             DATABASE_URL=${{ secrets.DATABASE_URL }}
@@ -42,12 +44,9 @@ jobs:
             LANCEDB_URI=${{ secrets.LANCEDB_URI }}
             MODAL_TOKEN_ID=${{ secrets.MODAL_TOKEN_ID }}
             MODAL_TOKEN_SECRET=${{ secrets.MODAL_TOKEN_SECRET }}
-            R2_ACCESS_KEY=${{ secrets.R2_ACCESS_KEY }}
-            R2_SECRET_KEY=${{ secrets.R2_SECRET_KEY }}
             REDIS_URL=${{ secrets.REDIS_URL }}
             REDIS_TOKEN=${{ secrets.REDIS_TOKEN }}
             FIREBASE_CONFIG_PATH=${{ secrets.FIREBASE_CONFIG_PATH }}
-            MAILERSEND_API_KEY=${{ secrets.MAILERSEND_API_KEY }}
             JITSI_DOMAIN=${{ secrets.JITSI_DOMAIN }}
             R2_ACCESS_KEY=${{ secrets.R2_ACCESS_KEY }}
             R2_SECRET_KEY=${{ secrets.R2_SECRET_KEY }}
@@ -56,9 +55,6 @@ jobs:
             MAILERSEND_API_KEY=${{ secrets.MAILERSEND_API_KEY }}
             MAILERSEND_USERNAME=${{ secrets.MAILERSEND_USERNAME }}
             WAPOR_API_KEY=${{ secrets.WAPOR_API_KEY }}
-          tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
 
-      - name: ✅ تأكيد الانتهاء
-        run: echo "تم بناء ورفع صورة AGRO_TECH بنجاح!"
+      - name: ✅ Verify Build
+        run: echo "Build and Push completed successfully for AGRO_TECH!"

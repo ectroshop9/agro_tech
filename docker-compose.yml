@@ -17,7 +17,15 @@ services:
       retries: 5
 
   web:
-    build: .
+    build: 
+      context: .
+      args:
+        # هذه السطور ضرورية لاستقبال المتغيرات أثناء البناء المحلي
+        - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+        - DATABASE_URL=${DATABASE_URL}
+        - SH_CLIENT_ID=${SH_CLIENT_ID}
+        - SH_CLIENT_SECRET=${SH_CLIENT_SECRET}
+        - WAPOR_API_KEY=${WAPOR_API_KEY}
     container_name: agro_web_app
     volumes:
       - .:/app
@@ -38,7 +46,7 @@ services:
       - GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
       - GEOS_LIBRARY_PATH=/usr/lib/libgeos_c.so
       
-      # 3. محركات الأقمار الصناعية والخرائط (Sentinel & FAO)
+      # 3. محركات الأقمار الصناعية (Sentinel & FAO)
       - SH_CLIENT_ID=${SH_CLIENT_ID}
       - SH_CLIENT_SECRET=${SH_CLIENT_SECRET}
       - SH_INSTANCE_ID=${SH_INSTANCE_ID}
@@ -52,21 +60,24 @@ services:
       - MODAL_TOKEN_ID=${MODAL_TOKEN_ID}
       - MODAL_TOKEN_SECRET=${MODAL_TOKEN_SECRET}
       
-      # 5. التخزين والأداء (R2 & Upstash Redis)
+      # 5. التخزين Cloudflare R2 (المتغيرات الناقصة تم إضافتها هنا)
       - R2_ACCESS_KEY=${R2_ACCESS_KEY}
       - R2_SECRET_KEY=${R2_SECRET_KEY}
+      - R2_BUCKET_NAME=${R2_BUCKET_NAME}
+      - R2_ENDPOINT=${R2_ENDPOINT}
       - REDIS_URL=${REDIS_URL}
       - REDIS_TOKEN=${REDIS_TOKEN}
       
-      # 6. التواصل والفيديو (Firebase, MailerSend, Jitsi)
+      # 6. التواصل والبريد (تم إضافة المتغيرات الجديدة)
       - FIREBASE_CONFIG_PATH=${FIREBASE_CONFIG_PATH}
       - FIREBASE_MESSAGING_ID=${FIREBASE_MESSAGING_ID}
       - MAILERSEND_API_KEY=${MAILERSEND_API_KEY}
+      - MAILERSEND_USERNAME=${MAILERSEND_USERNAME}
       - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL}
       - JITSI_DOMAIN=${JITSI_DOMAIN:-meet.jit.si}
       - JITSI_APP_ID=${JITSI_APP_ID}
 
-      # 7. إدارة المهام (Temporal)
+      # 7. إدارة المهام
       - TEMPORAL_ADDRESS=${TEMPORAL_ADDRESS:-localhost:7233}
 
 volumes:
