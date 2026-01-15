@@ -1,0 +1,33 @@
+name: 🚀 AGRO_TECH Auto Publish
+
+# يعمل الأكشن عند إرسال الكود لفرع main
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    # ربط العمل ببيئة الإنتاج التي وجدتها في إعدادات مستودعك
+    environment: production 
+    
+    steps:
+      - name: 📥 سحب الكود المصدري
+        uses: actions/checkout@v4
+
+      - name: 🔑 تسجيل الدخول إلى GitHub Packages
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }} # تأكد أنك أضفت هذا الاسم في Secrets
+
+      - name: 🏗️ بناء ورفع صورة Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          # سيتم الرفع باسمك الجديد ectroshop9 آلياً
+          tags: |
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
