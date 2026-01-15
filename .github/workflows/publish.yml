@@ -1,14 +1,17 @@
 name: 🚀 AGRO_TECH Smart Publish
 
-# التشغيل التلقائي عند إرسال الكود لفرع main
 on:
   push:
     branches: [ main ]
 
+# 🔑 هذا هو الجزء المفقود الذي سيحول الـ X إلى ✅
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    # ربط العمل ببيئة الإنتاج في GitHub Secrets
     environment: production 
     
     steps:
@@ -27,40 +30,28 @@ jobs:
         with:
           context: .
           push: true
-          # هنا يتم تمرير "المفاتيح" من خزنة GitHub إلى محرك Docker أثناء البناء
           build-args: |
-            # 1. الأمن وقاعدة البيانات
             DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
             DATABASE_URL=${{ secrets.DATABASE_URL }}
-            
-            # 2. الأقمار الصناعية والجغرافيا
             SH_CLIENT_ID=${{ secrets.SH_CLIENT_ID }}
             SH_CLIENT_SECRET=${{ secrets.SH_CLIENT_SECRET }}
             SH_INSTANCE_ID=${{ secrets.SH_INSTANCE_ID }}
             GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}
             FAO_API_KEY=${{ secrets.FAO_API_KEY }}
-            
-            # 3. الذكاء الاصطناعي (AI Engine)
             HF_TOKEN=${{ secrets.HF_TOKEN }}
             LANCEDB_URI=${{ secrets.LANCEDB_URI }}
             MODAL_TOKEN_ID=${{ secrets.MODAL_TOKEN_ID }}
             MODAL_TOKEN_SECRET=${{ secrets.MODAL_TOKEN_SECRET }}
-            
-            # 4. التخزين والأداء (R2 & Redis)
             R2_ACCESS_KEY=${{ secrets.R2_ACCESS_KEY }}
             R2_SECRET_KEY=${{ secrets.R2_SECRET_KEY }}
             REDIS_URL=${{ secrets.REDIS_URL }}
             REDIS_TOKEN=${{ secrets.REDIS_TOKEN }}
-            
-            # 5. التواصل (Notifications & Video)
             FIREBASE_CONFIG_PATH=${{ secrets.FIREBASE_CONFIG_PATH }}
             MAILERSEND_API_KEY=${{ secrets.MAILERSEND_API_KEY }}
             JITSI_DOMAIN=${{ secrets.JITSI_DOMAIN }}
-            
-          # وسم الصورة برقم الإصدار (SHA) وبالوسم الأحدث (latest)
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
 
       - name: ✅ تأكيد الانتهاء
-        run: echo "تم بناء ورفع صورة AGRO_TECH بنجاح إلى GitHub Packages!"
+        run: echo "تم بناء ورفع صورة AGRO_TECH بنجاح!"
