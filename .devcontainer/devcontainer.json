@@ -1,0 +1,23 @@
+{
+    "name": "AGRO_TECH_Container",
+    // هنا نضع صورتك الاحترافية التي بنيناها في GitHub
+    "image": "ghcr.io/ectroshop9/agro_web_app:latest",
+
+    "features": {
+        // حذفنا الميزات غير الضرورية لتسريع الدخول
+    },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-azuretools.vscode-docker"
+            ]
+        }
+    },
+
+    // لضمان حقن المتغيرات الـ 24 تلقائياً
+    "remoteEnv": {
+        "PYTHONPATH": "/workspaces/agro_tech"
+    }
+}
