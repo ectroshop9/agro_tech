@@ -28,29 +28,45 @@ services:
       db:
         condition: service_healthy
     environment:
-      # قاعدة البيانات والجغرافيا
+      # 1. الأمن والنظام
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-True}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-*}
+
+      # 2. قاعدة البيانات والجغرافيا
       - DATABASE_URL=postgis://agro_admin:agro_pass@db:5432/agro_tech_db
       - GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
       - GEOS_LIBRARY_PATH=/usr/lib/libgeos_c.so
       
-      # هويتك السيادية على Hugging Face
-      - HF_TOKEN=${HF_TOKEN}
-      - LANCEDB_URI=hf://agrotech26/Agro-Brain-Db
-      - HF_MODEL_REPO=agrotech26/Al-Makina-Engine
-      - HF_DATASET_ID=agrotech26/datasets
-      
-      # محركات الأقمار الصناعية والخرائط
+      # 3. محركات الأقمار الصناعية والخرائط (Sentinel & FAO)
       - SH_CLIENT_ID=${SH_CLIENT_ID}
       - SH_CLIENT_SECRET=${SH_CLIENT_SECRET}
+      - SH_INSTANCE_ID=${SH_INSTANCE_ID}
       - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+      - FAO_API_KEY=${FAO_API_KEY}
+      - WAPOR_API_KEY=${WAPOR_API_KEY}
       
-      # التخزين والذكاء الاصطناعي السحابي
-      - R2_ACCESS_KEY=${R2_ACCESS_KEY}
-      - R2_SECRET_KEY=${R2_SECRET_KEY}
+      # 4. الذكاء الاصطناعي (Hugging Face & Modal)
+      - HF_TOKEN=${HF_TOKEN}
+      - LANCEDB_URI=${LANCEDB_URI}
       - MODAL_TOKEN_ID=${MODAL_TOKEN_ID}
       - MODAL_TOKEN_SECRET=${MODAL_TOKEN_SECRET}
       
-      # إدارة المهام (Temporal)
+      # 5. التخزين والأداء (R2 & Upstash Redis)
+      - R2_ACCESS_KEY=${R2_ACCESS_KEY}
+      - R2_SECRET_KEY=${R2_SECRET_KEY}
+      - REDIS_URL=${REDIS_URL}
+      - REDIS_TOKEN=${REDIS_TOKEN}
+      
+      # 6. التواصل والفيديو (Firebase, MailerSend, Jitsi)
+      - FIREBASE_CONFIG_PATH=${FIREBASE_CONFIG_PATH}
+      - FIREBASE_MESSAGING_ID=${FIREBASE_MESSAGING_ID}
+      - MAILERSEND_API_KEY=${MAILERSEND_API_KEY}
+      - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL}
+      - JITSI_DOMAIN=${JITSI_DOMAIN:-meet.jit.si}
+      - JITSI_APP_ID=${JITSI_APP_ID}
+
+      # 7. إدارة المهام (Temporal)
       - TEMPORAL_ADDRESS=${TEMPORAL_ADDRESS:-localhost:7233}
 
 volumes:

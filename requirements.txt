@@ -1,23 +1,42 @@
+# --- الأساس (Core & Database) ---
 django>=5.0
 dj-database-url
 psycopg2-binary
 python-decouple
-whitenoise
+python-dotenv
+whitenoise[brotli]
 gunicorn
+
+# --- واجهة الإدارة والجماليات ---
+django-unfold         # الواجهة العصرية التي اخترتها
+django-debug-toolbar
+
+# --- النظام الجغرافي (GIS) ---
 djangorestframework
 djangorestframework-gis
 Shapely
 Fiona==1.9.5
 pyproj
 geopandas
+
+# --- المحرك الذكي وعلوم البيانات ---
 lancedb
 huggingface_hub
 arrow
 pandas
-numpy
+numpy==1.26.4        # نسخة مستقرة لضمان التوافق مع المكتبات الجغرافية
+
+# --- إدارة المهام والكاش (Redis/Temporal) ---
 django-q2[postgres]
-django-unfold
-django-debug-toolbar
-ruff
-python-dotenv
+django-redis          # ضرورية لربط Upstash Redis بـ Django
+redis                 # المكتبة الأساسية لمحرك Redis
+
+# --- التواصل والخدمات السحابية (المتغيرات الجديدة) ---
+firebase-admin        # لتشغيل Firebase Notifications
+mailersend            # لإرسال التقارير عبر MailerSend
+PyJWT                 # ضرورية لتوليد توكنات Jitsi الآمنة
+requests              # للتعامل مع API الخاص بـ FAO و Sentinel
+
+# --- الأدوات والتنظيم ---
 pyyaml
+ruff
