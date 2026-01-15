@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgis/postgis:15-3.3-alpine
+    container_name: agro_db
+    environment:
+      - POSTGRES_DB=agro_tech_db
+      - POSTGRES_USER=agro_admin
+      - POSTGRES_PASSWORD=agro_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agro_admin -d agro_tech_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: agro_web_app
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # قاعدة البيانات والجغرافيا
+      - DATABASE_URL=postgis://agro_admin:agro_pass@db:5432/agro_tech_db
+      - GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
+      - GEOS_LIBRARY_PATH=/usr/lib/libgeos_c.so
+      
+      # هويتك السيادية على Hugging Face
+      - HF_TOKEN=${HF_TOKEN}
+      - LANCEDB_URI=hf://agrotech26/Agro-Brain-Db
+      - HF_MODEL_REPO=agrotech26/Al-Makina-Engine
+      - HF_DATASET_ID=agrotech26/datasets
+      
+      # محركات الأقمار الصناعية والخرائط
+      - SH_CLIENT_ID=${SH_CLIENT_ID}
+      - SH_CLIENT_SECRET=${SH_CLIENT_SECRET}
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+      
+      # التخزين والذكاء الاصطناعي السحابي
+      - R2_ACCESS_KEY=${R2_ACCESS_KEY}
+      - R2_SECRET_KEY=${R2_SECRET_KEY}
+      - MODAL_TOKEN_ID=${MODAL_TOKEN_ID}
+      - MODAL_TOKEN_SECRET=${MODAL_TOKEN_SECRET}
+      
+      # إدارة المهام (Temporal)
+      - TEMPORAL_ADDRESS=${TEMPORAL_ADDRESS:-localhost:7233}
+
+volumes:
+  postgres_data:
