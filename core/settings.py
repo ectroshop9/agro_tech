@@ -63,6 +63,8 @@ MODAL_TOKEN_SECRET = os.getenv('MODAL_TOKEN_SECRET')
 # --- 6. التخزين والأداء (R2 & Redis) ---
 R2_ACCESS_KEY = os.getenv('R2_ACCESS_KEY')
 R2_SECRET_KEY = os.getenv('R2_SECRET_KEY')
+R2_BUCKET_NAME = os.getenv('R2_BUCKET_NAME')
+R2_ENDPOINT = os.getenv('R2_ENDPOINT')
 REDIS_URL = os.getenv('REDIS_URL')
 REDIS_TOKEN = os.getenv('REDIS_TOKEN')
 
@@ -87,7 +89,7 @@ FIREBASE_CONFIG_PATH = os.getenv('FIREBASE_CONFIG_PATH')
 FIREBASE_MESSAGING_ID = os.getenv('FIREBASE_MESSAGING_ID')
 
 MAILERSEND_API_KEY = os.getenv('MAILERSEND_API_KEY')
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'agro-tech@example.com')
+MAILERSEND_USERNAME = os.getenv('MAILERSEND_USERNAME')
 
 # إعدادات البريد الإلكتروني في جانجو لاستخدام MailerSend (عن طريق SMTP أو API)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -49,6 +49,13 @@ jobs:
             FIREBASE_CONFIG_PATH=${{ secrets.FIREBASE_CONFIG_PATH }}
             MAILERSEND_API_KEY=${{ secrets.MAILERSEND_API_KEY }}
             JITSI_DOMAIN=${{ secrets.JITSI_DOMAIN }}
+            R2_ACCESS_KEY=${{ secrets.R2_ACCESS_KEY }}
+            R2_SECRET_KEY=${{ secrets.R2_SECRET_KEY }}
+            R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
+            R2_ENDPOINT=${{ secrets.R2_ENDPOINT }}
+            MAILERSEND_API_KEY=${{ secrets.MAILERSEND_API_KEY }}
+            MAILERSEND_USERNAME=${{ secrets.MAILERSEND_USERNAME }}
+            WAPOR_API_KEY=${{ secrets.WAPOR_API_KEY }}
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
