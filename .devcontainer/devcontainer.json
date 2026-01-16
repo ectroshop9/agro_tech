@@ -1,9 +1,5 @@
 {
-    "name": "AGRO_TECH_FINAL",
-    "image": "ghcr.io/ectroshop9/agro_web_app@sha256:dca0c5d6fa0972d08c8e505edcdfa2c77df84f289b6e7c0e9e7d6b90d1233f77",
-    "customizations": {
-        "vscode": {
-            "extensions": ["ms-python.python"]
-        }
-    }
+    "name": "AGRO_TECH_EMERGENCY",
+    "image": "mcr.microsoft.com/devcontainers/python:3.11",
+    "postCreateCommand": "pip install --no-cache-dir -r requirements.txt"
 }
